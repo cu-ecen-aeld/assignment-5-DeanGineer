@@ -16,25 +16,32 @@ AESD_ASSIGNMENTS_GIT_SUBMODULES = YES
 
 define AESD_ASSIGNMENTS_BUILD_CMDS
 	$(MAKE) $(TARGET_CONFIGURE_OPTS) -C $(@D)/finder-app all
+	$(MAKE) $(TARGET_CONFIGURE_OPTS) -C $(@D)/server all
 endef
 
 # TODO add your writer, finder and finder-test utilities/scripts to the installation steps below
 define AESD_ASSIGNMENTS_INSTALL_TARGET_CMDS
-	$(INSTALL) -d 0755 $(@D)/conf/ $(TARGET_DIR)/root/conf/
-	$(INSTALL) -m 0755 $(@D)/conf/* $(TARGET_DIR)/root/conf/
-	$(INSTALL) -d 0755 $(@D)/conf/ $(TARGET_DIR)/etc/finder-app/conf/
+	# Install configuration files
+	$(INSTALL) -d 0755 $(TARGET_DIR)/etc/finder-app/conf/
 	$(INSTALL) -m 0755 $(@D)/conf/* $(TARGET_DIR)/etc/finder-app/conf/
+
+	# Install test scripts
 	$(INSTALL) -m 0755 $(@D)/assignment-autotest/test/assignment4/* $(TARGET_DIR)/bin
+
+	# Install finder utilities
 	$(INSTALL) -m 0755 $(@D)/finder-app/finder.sh $(TARGET_DIR)/usr/bin
 	$(INSTALL) -m 0755 $(@D)/finder-app/writer $(TARGET_DIR)/usr/bin
 	$(INSTALL) -m 0755 $(@D)/finder-app/finder-test.sh $(TARGET_DIR)/usr/bin
-	$(INSTALL) -d 0755 $(@D)/conf/ $(TARGET_DIR)/usr/bin/conf/
-	$(INSTALL) -m 0755 $(@D)/conf/* $(TARGET_DIR)/usr/bin/conf/
-	$(INSTALL) -d 0755 $(@D)/server/ $(TARGET_DIR)/root/
-	#$(INSTALL) -m 0755 $(@D)/server/aesdsocket $(TARGET_DIR)/root/
+
+	# Install server files
+	$(INSTALL) -d 0755 $(TARGET_DIR)/root/
+	$(INSTALL) -m 0755 $(@D)/server/* $(TARGET_DIR)/root/
+
+	# Install aesdsocket binary
 	$(INSTALL) -m 0755 $(@D)/server/aesdsocket $(TARGET_DIR)/usr/bin
-	$(INSTALL) -d 0755 $(@D)/server/ $(TARGET_DIR)/etc/init.d/S99aesdsocket
-	$(INSTALL) -m 0755 $(@D)/server/aesdsocket-start-stop $(TARGET_DIR)/etc/init.d/S99aesdsocket
+
+	# Install startup script
+	$(INSTALL) -D 0755 $(@D)/server/aesdsocket-start-stop $(TARGET_DIR)/etc/init.d/S99aesdsocket
 endef
 	
 $(eval $(generic-package))
